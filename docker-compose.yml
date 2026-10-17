@@ -6,6 +6,8 @@ services:
     container_name: laravel_app
     ports:
       - "8080:8000"
+    volumes:
+      - .:/var/www/html
     env_file:
       - .env
     depends_on:
@@ -15,6 +17,7 @@ services:
       sh -c "php artisan serve --host=0.0.0.0 --port=8000"
     networks:
       - laravel_network
+      
 
   mysql:
     image: mysql:8.4
@@ -43,3 +46,5 @@ volumes:
 networks:
   laravel_network:
     driver: bridge
+
+    
