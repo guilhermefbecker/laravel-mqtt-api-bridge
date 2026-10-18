@@ -58,7 +58,7 @@
             href="{{ route('logs-alteracao') }}">Logs de alterações</a>
           <a class="nav-sublink {{ request()->routeIs('logs') ? 'active' : '' }}" href="{{ route('logs') }}">Logs</a>
         </div>
-        <a class="nav-link" href="{{ asset('semaforo/application/cadastros_usuarios/index.html') }}">
+        <a class="nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" href="{{ route('usuarios.index') }}">
           <span class="nav-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
           <span class="nav-text">Usuários</span>
         </a>

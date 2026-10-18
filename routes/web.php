@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SemaforoController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'index')->name('home');
@@ -22,4 +23,18 @@ Route::get('semaforos/{semaforo}/editar', [SemaforoController::class, 'edit'])
 
 Route::resource('semaforos', SemaforoController::class)
     ->parameters(['semaforos' => 'semaforo'])
+    ->except(['show', 'create', 'edit']);
+
+// Mesma convenção dos semáforos: limpar antes do resource,
+// URIs criar/editar em português.
+Route::delete('usuarios/limpar', [UsuarioController::class, 'limpar'])
+    ->name('usuarios.limpar');
+
+Route::get('usuarios/criar', [UsuarioController::class, 'create'])
+    ->name('usuarios.create');
+Route::get('usuarios/{usuario}/editar', [UsuarioController::class, 'edit'])
+    ->name('usuarios.edit');
+
+Route::resource('usuarios', UsuarioController::class)
+    ->parameters(['usuarios' => 'usuario'])
     ->except(['show', 'create', 'edit']);
