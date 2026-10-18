@@ -97,7 +97,7 @@
                       Monthly revenue compared with operational targets.
                     </p>
                   </div>
-                  <a class="btn btn-light btn-sm" href="charts.html">View Details</a>
+                  <span class="btn btn-light btn-sm">View Details</span>
                 </div>
 
                 <div class="chart-bars" aria-label="Sales performance chart">
@@ -177,7 +177,7 @@
                   Latest account activity across the workspace.
                 </p>
               </div>
-              <a class="btn btn-outline-secondary btn-sm" href="{{ asset('semaforo/application/cadastros_usuarios/index.html') }}">Manage Users</a>
+              <a class="btn btn-outline-secondary btn-sm" href="{{ route('usuarios.index') }}">Manage Users</a>
             </div>
             <div class="table-responsive">
               <table class="table align-middle mb-0">
@@ -210,7 +210,7 @@
                     <td><span class="badge text-bg-success">Active</span></td>
                     <td>Jan 12, 2026</td>
                     <td class="text-end">
-                      <a class="btn btn-light btn-sm" href="user-details.html">View</a>
+                      <span class="btn btn-light btn-sm">View</span>
                     </td>
                   </tr>
                   <tr>
@@ -230,7 +230,7 @@
                     <td><span class="badge text-bg-success">Active</span></td>
                     <td>Feb 03, 2026</td>
                     <td class="text-end">
-                      <a class="btn btn-light btn-sm" href="user-details.html">View</a>
+                      <span class="btn btn-light btn-sm">View</span>
                     </td>
                   </tr>
                   <tr>
@@ -253,7 +253,7 @@
                     </td>
                     <td>Mar 18, 2026</td>
                     <td class="text-end">
-                      <a class="btn btn-light btn-sm" href="user-details.html">View</a>
+                      <span class="btn btn-light btn-sm">View</span>
                     </td>
                   </tr>
                   <tr>
@@ -276,7 +276,7 @@
                     </td>
                     <td>Apr 07, 2026</td>
                     <td class="text-end">
-                      <a class="btn btn-light btn-sm" href="user-details.html">View</a>
+                      <span class="btn btn-light btn-sm">View</span>
                     </td>
                   </tr>
                   <tr>
@@ -294,7 +294,7 @@
                     <td><span class="badge text-bg-success">Active</span></td>
                     <td>Apr 22, 2026</td>
                     <td class="text-end">
-                      <a class="btn btn-light btn-sm" href="user-details.html">View</a>
+                      <span class="btn btn-light btn-sm">View</span>
                     </td>
                   </tr>
                 </tbody>

@@ -41,3 +41,28 @@ Route::get('usuarios/{usuario}/editar', [UsuarioController::class, 'edit'])
 Route::resource('usuarios', UsuarioController::class)
     ->parameters(['usuarios' => 'usuario'])
     ->except(['show', 'create', 'edit']);
+
+// ---------------------------------------------------------------------------
+// Redirects de compatibilidade: URLs antigas do frontend HTML estático
+// (public/semaforo/application/... e caminhos relativos usados no original).
+// Mantidos para links antigos não retornarem 404.
+// ---------------------------------------------------------------------------
+$redirectsAntigos = [
+    '/simulador/index.html' => '/simulador',
+    '/monitoramento/index.html' => '/monitoramento',
+    '/cadastros_semaforo/index.html' => '/semaforos',
+    '/cadastros_usuarios/index.html' => '/usuarios',
+    '/logs_alteracao/index.html' => '/logs-alteracao',
+    '/logs/index.html' => '/logs',
+    '/semaforo/application/simulador/index.html' => '/simulador',
+    '/semaforo/application/monitoramento/index.html' => '/monitoramento',
+    '/semaforo/application/cadastros_semaforo/index.html' => '/semaforos',
+    '/semaforo/application/cadastros_usuarios/index.html' => '/usuarios',
+    '/semaforo/application/logs_alteracao/index.html' => '/logs-alteracao',
+    '/semaforo/application/logs/index.html' => '/logs',
+    '/semaforo/application/index.html' => '/',
+];
+
+foreach ($redirectsAntigos as $antiga => $nova) {
+    Route::redirect($antiga, $nova);
+}
