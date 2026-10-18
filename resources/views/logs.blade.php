@@ -56,7 +56,7 @@
             </div>
             <div class="heading-actions">
               <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
-                <input class="form-check-input mt-0" type="checkbox" role="switch" id="switchAuto" />
+                <input class="form-check-input mt-0" type="checkbox" role="switch" id="switchAuto" checked />
                 <label class="form-check-label text-nowrap" for="switchAuto">Atualizar automaticamente</label>
               </div>
               <button class="btn btn-outline-secondary btn-sm" type="button" id="btnAtualizar">
@@ -176,6 +176,67 @@
               <ul class="pagination pagination-sm mb-0" id="paginacaoLogs"></ul>
             </nav>
           </section>
+        </div>
+
+        <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-labelledby="modalDetalhesLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2 class="modal-title h5" id="modalDetalhesLabel">
+                  <i class="bi bi-journal-text" aria-hidden="true"></i> Detalhes do log
+                </h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row g-3">
+                  <div class="col-6 col-md-3">
+                    <span class="log-detalhe-rotulo">ID</span>
+                    <strong id="detalheId">—</strong>
+                  </div>
+                  <div class="col-6 col-md-5">
+                    <span class="log-detalhe-rotulo">Dispositivo</span>
+                    <strong id="detalheDispositivo">—</strong>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <span class="log-detalhe-rotulo">Tópico</span>
+                    <strong id="detalheTopico">—</strong>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <span class="log-detalhe-rotulo">Cor</span>
+                    <strong id="detalheCor">—</strong>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <span class="log-detalhe-rotulo">Estado</span>
+                    <strong id="detalheEstado">—</strong>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <span class="log-detalhe-rotulo">Ciclo</span>
+                    <strong id="detalheCiclo">—</strong>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <span class="log-detalhe-rotulo">Porta</span>
+                    <strong id="detalhePorta">—</strong>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <span class="log-detalhe-rotulo">Comando</span>
+                    <strong id="detalheComando">—</strong>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <span class="log-detalhe-rotulo">Recebido em</span>
+                    <strong id="detalheRecebido">—</strong>
+                  </div>
+                </div>
+
+                <hr />
+
+                <span class="log-detalhe-rotulo mb-1">Payload bruto</span>
+                <pre class="log-payload" id="detalhePayload">—</pre>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
         </div>
 @endsection
 

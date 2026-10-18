@@ -438,4 +438,5 @@
   window.addEventListener("beforeunload", pararAuto);
 
   buscarLogs(false);
+  alternarAuto();
 })();
