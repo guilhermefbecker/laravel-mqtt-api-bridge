@@ -33,14 +33,15 @@
           <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
-        <button class="nav-link nav-accordion-toggle {{ request()->routeIs('simulador', 'monitoramento') ? 'active' : '' }}"
+        <button class="nav-link nav-accordion-toggle {{ request()->routeIs('simulador', 'monitoramento', 'semaforos.*') ? 'active' : '' }}"
           type="button" aria-expanded="true" aria-controls="semaforo-submenu">
           <span class="nav-icon"><i class="bi bi-stoplights" aria-hidden="true"></i></span>
           <span class="nav-text">Semáforo</span>
           <i class="bi bi-chevron-down nav-chevron" aria-hidden="true"></i>
         </button>
         <div class="nav-submenu" id="semaforo-submenu">
-          <a class="nav-sublink" href="{{ asset('semaforo/application/cadastros_semaforo/index.html') }}">Cadastros</a>
+          <a class="nav-sublink {{ request()->routeIs('semaforos.*') ? 'active' : '' }}"
+            href="{{ route('semaforos.index') }}">Cadastros</a>
           <a class="nav-sublink {{ request()->routeIs('simulador') ? 'active' : '' }}"
             href="{{ route('simulador') }}">Simulador</a>
           <a class="nav-sublink {{ request()->routeIs('monitoramento') ? 'active' : '' }}"
@@ -87,6 +88,10 @@
           </button>
           <a class="btn btn-outline-secondary btn-sm ms-3" href="{{ route('home') }}"><i class="bi bi-arrow-left"
               aria-hidden="true"></i> Voltar</a>
+          <form class="d-none d-md-flex ms-3 flex-grow-1" role="search" onsubmit="return false">
+            <input class="form-control search-input" type="search" placeholder="Buscar configurações"
+              aria-label="Buscar configurações" @yield('busca_tabela') />
+          </form>
 
           <div class="navbar-actions ms-auto">
             <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="Alternar tema"
@@ -103,8 +108,7 @@
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item"
-                    href="{{ asset('semaforo/application/cadastros_semaforo/index.html') }}">Cadastros</a>
+                  <a class="dropdown-item" href="{{ route('semaforos.index') }}">Cadastros</a>
                 </li>
                 <li>
                   <a class="dropdown-item" href="{{ route('simulador') }}">Simulador</a>
