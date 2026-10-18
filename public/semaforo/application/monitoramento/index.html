@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Monitoramento de semáforo" />
+  <title>AdminHMD | Monitoramento</title>
+
+  <!-- BIBLIOTECA MQTT (Paho) — fala o protocolo MQTT por WebSocket com o
+     broker Mosquitto do Docker. Salva localmente em assets/js (sem internet). -->
+  <script src="../../assets/js/paho-mqtt.min.js"></script>
+
+  <link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../../assets/vendors/bootstrap-icons/bootstrap-icons.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Navegação principal">
+      <div class="sidebar-header">
+        <a class="brand-mark" href="../../index.html" aria-label="Painel adminHMD">
+          <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
+          <span class="brand-copy">
+            <span class="brand-title">adminHMD</span>
+            <span class="brand-subtitle">Painel administrativo</span>
+          </span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav"></nav>
+
+      <div class="sidebar-user">
+        <img class="avatar-img avatar-md sidebar-user-avatar" src="../../assets/images/avatar/avatar.jpg"
+          alt="Administrador" />
+        <strong>Administrador</strong>
+        <small>Workspace ativo</small>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span class="sidebar-footer-text">Sistema funcionando normalmente</span>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <nav class="navbar admin-navbar navbar-expand bg-white">
+        <div class="container-fluid px-3 px-lg-4">
+          <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-controls="adminSidebar"
+            aria-expanded="true" aria-label="Alternar menu lateral">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <a class="btn btn-outline-secondary btn-sm ms-3" href="../../index.html">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar
+          </a>
+          <div class="navbar-actions ms-auto">
+            <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="Alternar tema"
+              title="Alternar tema">
+              <i class="bi bi-moon-stars" data-theme-icon aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main class="dashboard-content">
+        <!-- =====================================================
+           CONTEÚDO DA PÁGINA — monitoramento ao vivo do semáforo.
+           ===================================================== -->
+        <div class="container-fluid px-3 px-lg-4 py-4" id="monitoramento">
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-activity" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1">Controle de tráfego</p>
+                <h1 class="h3 mb-1">Monitoramento de Semáforo</h1>
+                <p class="text-muted mb-0">
+                  Estado ao vivo do semáforo, atualizado pelas mensagens MQTT recebidas do MQTTX.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <section class="row g-3 mt-1">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-4">
+              <div class="panel sf-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h6 mb-1">
+                      <i class="bi bi-stoplights" aria-hidden="true"></i>
+                      <span>Semáforo</span>
+                    </h2>
+                  </div>
+                </div>
+
+                <div class="sf-visual">
+                  <div class="sf-poste"></div>
+                  <div class="sf-caixa">
+                    <div id="luzVermelho" class="sf-luz sf-luz-vermelha" aria-label="Luz vermelha"></div>
+                    <div id="luzAmarelo" class="sf-luz sf-luz-amarela" aria-label="Luz amarela"></div>
+                    <div id="luzVerde" class="sf-luz sf-luz-verde" aria-label="Luz verde"></div>
+                  </div>
+                </div>
+
+                <div class="sf-status">
+                  <span id="infoModo">Modo: parado</span>
+                  <span id="infoComando">Último comando: —</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-7 col-xl-8">
+              <div class="panel h-100">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1 section-title">
+                      <i class="bi bi-activity" aria-hidden="true"></i><span>Status em tempo real</span>
+                    </h2>
+                    <p class="text-muted mb-0">
+                      Telemetria recebida no tópico MQTT "semaforo/estado".
+                    </p>
+                  </div>
+                </div>
+
+                <div class="activity-list monitor-list">
+                  <div class="activity-item">
+                    <span class="activity-dot bg-success"></span>
+                    <div>
+                      <p class="mb-1 fw-semibold">Conexão com o broker</p>
+                      <p class="text-muted small mb-0" id="statusConexao">Conectando...</p>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <span class="activity-dot bg-primary"></span>
+                    <div>
+                      <p class="mb-1 fw-semibold">Última mensagem recebida</p>
+                      <p class="text-muted small mb-0" id="infoBruto">—</p>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <span class="activity-dot bg-warning"></span>
+                    <div>
+                      <p class="mb-1 fw-semibold">Diagnóstico</p>
+                      <p class="text-muted small mb-0" id="infoReload">Recarregamentos: 0</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../../assets/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <script src="../../assets/js/semaforoMQTT.js"></script>
+</body>
+
+</html>
