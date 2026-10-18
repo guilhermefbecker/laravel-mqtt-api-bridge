@@ -186,13 +186,6 @@
           bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal')).show();
         });
       });
-
-      // Registra a alteracao no log (mesma chamada do original).
-      @if (session('log'))
-        if (typeof window.registrarLog === 'function') {
-          window.registrarLog(@json(session('log')));
-        }
-      @endif
     })();
   </script>
 @endpush

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UsuarioRequest;
+use App\Models\LogAlteracao;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class UsuarioController extends Controller
@@ -37,10 +37,18 @@ class UsuarioController extends Controller
 
         $usuario = User::create($dados);
 
+        LogAlteracao::registrar(
+            'criou',
+            'usuarios',
+            $usuario->id,
+            null,
+            $usuario->only(self::camposAuditados()),
+            "Criou novo usuário: {$usuario->name}",
+        );
+
         return redirect()
             ->route('usuarios.index')
-            ->with('sucesso', 'Usuário salvo com sucesso.')
-            ->with('log', "Criou novo usuário: {$usuario->name}");
+            ->with('sucesso', 'Usuário salvo com sucesso.');
     }
 
     public function edit(User $usuario): View
@@ -50,6 +58,8 @@ class UsuarioController extends Controller
 
     public function update(UsuarioRequest $request, User $usuario): RedirectResponse
     {
+        $antes = $usuario->only(self::camposAuditados());
+
         $dados = $request->validated();
         $dados['name'] = $dados['nome'];
         $dados['ativo'] = $request->boolean('ativo');
@@ -62,29 +72,52 @@ class UsuarioController extends Controller
 
         $usuario->update($dados);
 
+        LogAlteracao::registrar(
+            'atualizou',
+            'usuarios',
+            $usuario->id,
+            $antes,
+            $usuario->fresh()->only(self::camposAuditados()),
+            "Atualizou usuário: {$usuario->name}",
+        );
+
         return redirect()
             ->route('usuarios.index')
-            ->with('sucesso', 'Usuário atualizado com sucesso.')
-            ->with('log', "Atualizou usuário: {$usuario->name}");
+            ->with('sucesso', 'Usuário atualizado com sucesso.');
     }
 
     public function destroy(User $usuario): RedirectResponse
     {
+        LogAlteracao::registrar(
+            'excluiu',
+            'usuarios',
+            $usuario->id,
+            $usuario->only(self::camposAuditados()),
+            null,
+            "Excluiu usuário: {$usuario->name}",
+        );
+
         $usuario->delete();
 
         return redirect()
             ->route('usuarios.index')
-            ->with('sucesso', 'Usuário excluído com sucesso.')
-            ->with('log', "Excluiu usuário: {$usuario->name}");
+            ->with('sucesso', 'Usuário excluído com sucesso.');
     }
 
     public function limpar(): RedirectResponse
     {
         User::query()->truncate();
 
+        LogAlteracao::registrar('limpou', 'usuarios', null, null, null, 'Excluiu todos os usuários cadastrados');
+
         return redirect()
             ->route('usuarios.index')
-            ->with('sucesso', 'Todos os usuários foram excluídos.')
-            ->with('log', 'Excluiu todos os usuários cadastrados');
+            ->with('sucesso', 'Todos os usuários foram excluídos.');
+    }
+
+    private static function camposAuditados(): array
+    {
+        // password fica de fora de propósito: nunca gravar em log.
+        return ['name', 'sobrenome', 'cpf', 'nascimento', 'celular', 'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'perfil', 'ativo', 'email'];
     }
 }

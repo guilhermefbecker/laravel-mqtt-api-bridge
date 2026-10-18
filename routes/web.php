@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogAlteracaoController;
 use App\Http\Controllers\SemaforoController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -8,7 +9,9 @@ Route::view('/', 'index')->name('home');
 Route::view('/monitoramento', 'monitoramento')->name('monitoramento');
 Route::view('/simulador', 'simulador')->name('simulador');
 Route::view('/logs', 'logs')->name('logs');
-Route::view('/logs-alteracao', 'logs-alteracao')->name('logs-alteracao');
+
+Route::get('/logs-alteracao', [LogAlteracaoController::class, 'index'])->name('logs-alteracao');
+Route::delete('/logs-alteracao/limpar', [LogAlteracaoController::class, 'limpar'])->name('logs-alteracao.limpar');
 
 // A rota "limpar" precisa vir antes do resource: senão "limpar" é
 // interpretado como o {semaforo} da rota DELETE do resource.
