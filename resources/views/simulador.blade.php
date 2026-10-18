@@ -84,7 +84,7 @@
 @endsection
 
 @push('scripts')
-  <script src="{{ asset('assets/js/semaforoMQTT.js') }}"></script>
+  <script src="{{ asset('assets/js/semaforo-api.js') }}"></script>
   <script>
     (function() {
       // Estado simulado dos botões (liga/desliga por cor).
@@ -126,8 +126,6 @@
           }
 
           mostrarFeedback('Comando enviado: ' + cor + ' = ' + (estado ? 'ligado' : 'desligado'), 'success');
-          document.getElementById('infoComando').textContent =
-            'Comando enviado: ' + cor + ' = ' + (estado ? 'ligado' : 'desligado');
         } catch (erro) {
           mostrarFeedback('Falha ao enviar comando.', 'danger');
         }

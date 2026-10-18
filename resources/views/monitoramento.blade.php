@@ -92,5 +92,5 @@
 @endsection
 
 @push('scripts')
-  <script src="{{ asset('assets/js/semaforoMQTT.js') }}"></script>
+  <script src="{{ asset('assets/js/semaforo-api.js') }}"></script>
 @endpush
