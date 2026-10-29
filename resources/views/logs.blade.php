@@ -141,8 +141,6 @@
                     <th scope="col">ID</th>
                     <th scope="col">Dispositivo</th>
                     <th scope="col">Cor</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Ciclo</th>
                     <th scope="col">Data e hora</th>
                     <th scope="col" class="text-end">Ações</th>
                   </tr>

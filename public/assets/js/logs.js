@@ -251,8 +251,6 @@
     linha.appendChild(criarCelula(log.id));
     linha.appendChild(criarCelula(log.dispositivo));
     linha.appendChild(criarCelulaCor(log.cor));
-    linha.appendChild(criarCelulaBooleana(log.estado, "Ligado", "Desligado"));
-    linha.appendChild(criarCelulaBooleana(log.ciclo, "Sim", "Não"));
     linha.appendChild(criarCelula(formatarData(log.recebido_em)));
     linha.appendChild(criarCelulaAcoes(log));
 
