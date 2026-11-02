@@ -10,7 +10,7 @@ use PhpMqtt\Client\MqttClient;
 class MqttListen extends Command
 {
     protected $signature = 'mqtt:listen';
-    protected $description = 'Escuta o tópico semaforo/estado e salva no banco';
+    protected $description = 'Escuta o tópico de estado configurado e salva no banco';
 
     public function handle(LogEstadoService $logs): int
     {
