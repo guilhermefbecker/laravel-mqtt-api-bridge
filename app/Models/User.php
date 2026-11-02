@@ -13,6 +13,26 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    // Campos gravados nos logs de alteração (auditoria).
+    // password fica de fora de propósito: nunca gravar em log.
+    public const CAMPOS_AUDITADOS = [
+        'name',
+        'sobrenome',
+        'cpf',
+        'nascimento',
+        'celular',
+        'cep',
+        'logradouro',
+        'numero',
+        'complemento',
+        'bairro',
+        'cidade',
+        'estado',
+        'perfil',
+        'ativo',
+        'email',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

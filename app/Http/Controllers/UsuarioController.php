@@ -42,7 +42,7 @@ class UsuarioController extends Controller
             'usuarios',
             $usuario->id,
             null,
-            $usuario->only(self::camposAuditados()),
+            $usuario->only(User::CAMPOS_AUDITADOS),
             "Criou novo usuário: {$usuario->name}",
         );
 
@@ -58,7 +58,7 @@ class UsuarioController extends Controller
 
     public function update(UsuarioRequest $request, User $usuario): RedirectResponse
     {
-        $antes = $usuario->only(self::camposAuditados());
+        $antes = $usuario->only(User::CAMPOS_AUDITADOS);
 
         $dados = $request->validated();
         $dados['name'] = $dados['nome'];
@@ -77,7 +77,7 @@ class UsuarioController extends Controller
             'usuarios',
             $usuario->id,
             $antes,
-            $usuario->fresh()->only(self::camposAuditados()),
+            $usuario->fresh()->only(User::CAMPOS_AUDITADOS),
             "Atualizou usuário: {$usuario->name}",
         );
 
@@ -92,7 +92,7 @@ class UsuarioController extends Controller
             'excluiu',
             'usuarios',
             $usuario->id,
-            $usuario->only(self::camposAuditados()),
+            $usuario->only(User::CAMPOS_AUDITADOS),
             null,
             "Excluiu usuário: {$usuario->name}",
         );
@@ -113,11 +113,5 @@ class UsuarioController extends Controller
         return redirect()
             ->route('usuarios.index')
             ->with('sucesso', 'Todos os usuários foram excluídos.');
-    }
-
-    private static function camposAuditados(): array
-    {
-        // password fica de fora de propósito: nunca gravar em log.
-        return ['name', 'sobrenome', 'cpf', 'nascimento', 'celular', 'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'perfil', 'ativo', 'email'];
     }
 }

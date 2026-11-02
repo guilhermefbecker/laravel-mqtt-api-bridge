@@ -41,7 +41,7 @@ class SemaforoController extends Controller
             'semaforos',
             $semaforo->id,
             null,
-            $semaforo->only(self::camposAuditados()),
+            $semaforo->only(Semaforo::CAMPOS_AUDITADOS),
             "Criou novo semáforo: {$semaforo->nome}",
         );
 
@@ -59,7 +59,7 @@ class SemaforoController extends Controller
     // Recebe o formulário de edição, atualiza o semáforo, registra o log da alteração e redireciona para a lista.
     public function update(SemaforoRequest $request, Semaforo $semaforo): RedirectResponse
     {
-        $antes = $semaforo->only(self::camposAuditados());
+        $antes = $semaforo->only(Semaforo::CAMPOS_AUDITADOS);
 
         $semaforo->update($request->validated() + ['ativo' => $request->boolean('ativo')]);
 
@@ -68,7 +68,7 @@ class SemaforoController extends Controller
             'semaforos',
             $semaforo->id,
             $antes,
-            $semaforo->fresh()->only(self::camposAuditados()),
+            $semaforo->fresh()->only(Semaforo::CAMPOS_AUDITADOS),
             "Atualizou cadastro do semáforo: {$semaforo->nome}",
         );
 
@@ -84,7 +84,7 @@ class SemaforoController extends Controller
             'excluiu',
             'semaforos',
             $semaforo->id,
-            $semaforo->only(self::camposAuditados()),
+            $semaforo->only(Semaforo::CAMPOS_AUDITADOS),
             null,
             "Excluiu semáforo: {$semaforo->nome}",
         );
@@ -107,11 +107,5 @@ class SemaforoController extends Controller
         return redirect()
             ->route('semaforos.index')
             ->with('sucesso', 'Todos os cadastros foram excluídos.');
-    }
-
-    // Retorna os campos auditados do modelo Semaforo, para uso nos logs de alteração.
-    private static function camposAuditados(): array
-    {
-        return ['nome', 'tempo_vermelho', 'tempo_amarelo', 'tempo_verde', 'latitude_longitude', 'ativo'];
     }
 }

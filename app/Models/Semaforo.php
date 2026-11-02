@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Semaforo extends Model
 {
+    // Campos gravados nos logs de alteração (auditoria).
+    public const CAMPOS_AUDITADOS = [
+        'nome',
+        'tempo_vermelho',
+        'tempo_amarelo',
+        'tempo_verde',
+        'latitude_longitude',
+        'ativo',
+    ];
+
     protected $fillable = [
         'nome',
         'tempo_vermelho',
