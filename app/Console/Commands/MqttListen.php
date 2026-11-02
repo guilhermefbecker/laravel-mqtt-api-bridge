@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Log;
+use App\Services\LogEstadoService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Validator;
 use PhpMqtt\Client\ConnectionSettings;
 use PhpMqtt\Client\MqttClient;
 
@@ -13,9 +12,12 @@ class MqttListen extends Command
     protected $signature = 'mqtt:listen';
     protected $description = 'Escuta o tópico semaforo/estado e salva no banco';
 
-    public function handle()
+    public function handle(LogEstadoService $logs): int
     {
-        $mqtt = new MqttClient('broker.hivemq.com', 1883, 'laravel-semaforo-bridge-listener');
+        $topico = config('mqtt.topico_estado');
+        $clientId = 'laravel-semaforo-listener-' . bin2hex(random_bytes(4));
+
+        $mqtt = new MqttClient(config('mqtt.host'), config('mqtt.port'), $clientId);
 
         $settings = (new ConnectionSettings)
             ->setKeepAliveInterval(30)
@@ -24,36 +26,25 @@ class MqttListen extends Command
             ->setDelayBetweenReconnectAttempts(2000);
 
         $mqtt->connect($settings, false);
-        $this->info('Conectado. Aguardando mensagens em semaforo/estado...');
+        $this->info("Conectado. Aguardando mensagens em {$topico}...");
 
-        $mqtt->subscribe('semaforo/estado', function (string $topic, string $message) {
-            $data = json_decode($message, true);
+        $mqtt->subscribe($topico, function (string $topic, string $message) use ($logs) {
+            $resultado = $logs->salvarMensagem($message);
 
-            // ignora mensagens que não são JSON (ex.: comandos de texto como "iniciar")
-            if (!is_array($data)) {
+            if ($resultado['status'] === 'ignorado') {
                 $this->warn("Ignorado (não é JSON): {$message}");
-                return;
-            }
-
-            $validator = Validator::make($data, [
-                'dispositivo' => 'required|string',
-                'cor'         => 'required|string',
-                'porta'       => 'required|integer',
-                'estado'      => 'required|boolean',
-                'ciclo'       => 'required|boolean',
-            ]);
-
-            if ($validator->fails()) {
+            } elseif ($resultado['status'] === 'invalido') {
                 $this->error('Payload inválido: ' . $message);
-                return;
+            } else {
+                $log = $resultado['log'];
+                $this->info("Salvo #{$log->id}: {$log->cor} (estado=" . ($log->estado ? 'on' : 'off') . ')');
             }
-
-            $log = Log::create($validator->validated());
-            $this->info("Salvo #{$log->id}: {$log->cor} (estado=" . ($log->estado ? 'on' : 'off') . ')');
         }, 0);
 
         $mqtt->loop(true); // loop infinito
 
         $mqtt->disconnect();
+
+        return self::SUCCESS;
     }
 }
