@@ -3,18 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\LogAlteracao;
+use App\Services\MqttService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use PhpMqtt\Client\MqttClient;
 
 class ComandoController extends Controller
 {
-
-//valida o comando recebido (estado, cor e tempos do ciclo), 
-//publica no broker MQTT, registra o log da alteração e retorna a resposta JSON (422 se a validação falhar, 502 se o MQTT falhar).
-
-    public function store(Request $request): JsonResponse
+    // Valida, publica no MQTT, registra a auditoria e devolve o JSON.
+    public function store(Request $request, MqttService $mqtt): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'estado' => ['required', 'string', 'in:vermelho,amarelo,verde,intermitente,ciclo,desligado'],
@@ -51,7 +48,7 @@ class ComandoController extends Controller
         $comando = $validator->validated();
 
         try {
-            $this->publicar($comando);
+            $mqtt->publicar(config('mqtt.topico_comando'), $comando);
         } catch (\Throwable $e) {
             report($e);
 
@@ -98,24 +95,5 @@ class ComandoController extends Controller
         }
 
         return $rotulos[$comando['estado']] ?? $comando['estado'];
-    }
-
-    //conecta ao broker MQTT com um client ID aleatório, publica o comando em JSON no tópico configurado (QoS 0, sem retain) e desconecta.
-
-    private function publicar(array $comando): void
-    {
-        $clientId = 'laravel-semaforo-comando-' . bin2hex(random_bytes(4));
-        $mqtt = new MqttClient(config('mqtt.host'), config('mqtt.port'), $clientId);
-
-        $mqtt->connect(null, false);
-
-        $mqtt->publish(
-            config('mqtt.topico_comando'),
-            json_encode($comando, JSON_UNESCAPED_UNICODE),
-            MqttClient::QOS_AT_MOST_ONCE,
-            false,
-        );
-
-        $mqtt->disconnect();
     }
 }
