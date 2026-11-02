@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-
-    // Lista logs de alteração com filtros opcionais (dispositivo, cor, estado, ciclo, data inicial e final) e paginação.
+    // Lista os logs recebidos do MQTT com filtros opcionais e paginação.
     public function index(Request $request)
     {
         $logs = Log::query()
@@ -25,6 +24,7 @@ class LogController extends Controller
         return LogResource::collection($logs);
     }
 
+    // Devolve o último log direto (sem data/meta).
     public function ultimo()
     {
         return Log::latest('id')->firstOrFail();

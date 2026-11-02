@@ -26,7 +26,7 @@ class ComandoController extends Controller
         }
 
         LogAlteracao::registrar(
-            'enviou',
+            'enviou comando',
             'comandos',
             null,
             null,
@@ -44,23 +44,20 @@ class ComandoController extends Controller
 
     private function descreverComando(array $comando): string
     {
-        $rotulos = [
-            'vermelho' => 'Vermelho',
-            'amarelo' => 'Amarelo',
-            'verde' => 'Verde',
-            'intermitente' => 'Intermitente',
-            'desligado' => 'Desligado',
-        ];
-
         if ($comando['estado'] === 'ciclo') {
             return sprintf(
-                'Ciclo (vermelho %ds, amarelo %ds, verde %ds)',
+                'ciclo (vermelho %ds, amarelo %ds, verde %ds)',
                 $comando['tempoVermelho'],
                 $comando['tempoAmarelo'],
                 $comando['tempoVerde'],
             );
         }
 
-        return $rotulos[$comando['estado']] ?? $comando['estado'];
+        // Cores acendem a luz: "vermelho = ligado" (mesmo formato dos logs do MQTT).
+        if (!empty($comando['cor'])) {
+            return "{$comando['cor']} = ligado";
+        }
+
+        return $comando['estado'];
     }
 }
