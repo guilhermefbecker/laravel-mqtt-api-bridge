@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
+
+    // Lista logs de alteração com filtros opcionais (dispositivo, cor, estado, ciclo, data inicial e final) e paginação.
     public function index(Request $request)
     {
         $logs = Log::query()

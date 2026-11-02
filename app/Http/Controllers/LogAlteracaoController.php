@@ -6,6 +6,8 @@ use App\Models\LogAlteracao;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
+//Controller para exibir e limpar o histórico de logs de alteração.
+
 class LogAlteracaoController extends Controller
 {
     public function index(): View

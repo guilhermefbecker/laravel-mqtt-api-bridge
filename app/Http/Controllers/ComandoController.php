@@ -10,6 +10,10 @@ use PhpMqtt\Client\MqttClient;
 
 class ComandoController extends Controller
 {
+
+//valida o comando recebido (estado, cor e tempos do ciclo), 
+//publica no broker MQTT, registra o log da alteração e retorna a resposta JSON (422 se a validação falhar, 502 se o MQTT falhar).
+
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -95,6 +99,8 @@ class ComandoController extends Controller
 
         return $rotulos[$comando['estado']] ?? $comando['estado'];
     }
+
+    //conecta ao broker MQTT com um client ID aleatório, publica o comando em JSON no tópico configurado (QoS 0, sem retain) e desconecta.
 
     private function publicar(array $comando): void
     {

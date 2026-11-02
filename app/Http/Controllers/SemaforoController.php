@@ -10,6 +10,7 @@ use Illuminate\View\View;
 
 class SemaforoController extends Controller
 {
+    // Lista semáforos cadastrados, com contagem de total, ativos e média do ciclo.
     public function index(): View
     {
         $semaforos = Semaforo::orderBy('id')->get();
@@ -24,11 +25,13 @@ class SemaforoController extends Controller
         ]);
     }
 
+    // Exibe o formulário de cadastro de semáforo.
     public function create(): View
     {
         return view('semaforos.create');
     }
 
+    // Recebe o formulário de cadastro, cria o semáforo, registra o log da criação e redireciona para a lista.
     public function store(SemaforoRequest $request): RedirectResponse
     {
         $semaforo = Semaforo::create($request->validated() + ['ativo' => $request->boolean('ativo')]);
@@ -47,11 +50,13 @@ class SemaforoController extends Controller
             ->with('sucesso', 'Cadastro criado com sucesso.');
     }
 
+    // Exibe o formulário de edição de semáforo.
     public function edit(Semaforo $semaforo): View
     {
         return view('semaforos.edit', ['semaforo' => $semaforo]);
     }
 
+    // Recebe o formulário de edição, atualiza o semáforo, registra o log da alteração e redireciona para a lista.
     public function update(SemaforoRequest $request, Semaforo $semaforo): RedirectResponse
     {
         $antes = $semaforo->only(self::camposAuditados());
@@ -72,6 +77,7 @@ class SemaforoController extends Controller
             ->with('sucesso', 'Cadastro atualizado com sucesso.');
     }
 
+    // Recebe a requisição de exclusão, deleta o semáforo, registra o log da exclusão e redireciona para a lista.
     public function destroy(Semaforo $semaforo): RedirectResponse
     {
         LogAlteracao::registrar(
@@ -90,6 +96,8 @@ class SemaforoController extends Controller
             ->with('sucesso', 'Cadastro excluído.');
     }
 
+
+    // Recebe a requisição de exclusão de todos os semáforos, deleta todos os registros, registra o log da exclusão e redireciona para a lista.
     public function limpar(): RedirectResponse
     {
         Semaforo::query()->truncate();
@@ -101,6 +109,7 @@ class SemaforoController extends Controller
             ->with('sucesso', 'Todos os cadastros foram excluídos.');
     }
 
+    // Retorna os campos auditados do modelo Semaforo, para uso nos logs de alteração.
     private static function camposAuditados(): array
     {
         return ['nome', 'tempo_vermelho', 'tempo_amarelo', 'tempo_verde', 'latitude_longitude', 'ativo'];
